@@ -1,22 +1,28 @@
 import { NgClass } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { AuthService } from '@core/services/auth.service';
+import { checkInvalidFields } from '@shared/utils/form-utils';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'jet-login',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
 export class LoginComponent implements OnInit {
+  authService = inject(AuthService);
+
   loginForm: FormGroup<{
-    username: FormControl;
-    password: FormControl;
+    username: FormControl<string>;
+    password: FormControl<string>;
   }>;
 
   ngOnInit(): void {
@@ -24,12 +30,30 @@ export class LoginComponent implements OnInit {
   }
   private initForm() {
     this.loginForm = new FormGroup({
-      username: new FormControl('', { nonNullable: true }),
-      password: new FormControl('', { nonNullable: true }),
+      username: new FormControl('', {
+        nonNullable: true,
+        validators: Validators.required,
+      }),
+      password: new FormControl('', {
+        nonNullable: true,
+        validators: Validators.required,
+      }),
     });
   }
 
-  handleSubmit() {
-    console.log(this.loginForm.value);
+  public handleSubmit(): void {
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
+    }
+
+    this.authService
+      .signIn(this.loginForm.value as { username: string; password: string })
+      .pipe(tap(() => console.log('hey')))
+      .subscribe();
+  }
+
+  public checkInvalidField(field: string): boolean {
+    return checkInvalidFields(this.loginForm, field);
   }
 }

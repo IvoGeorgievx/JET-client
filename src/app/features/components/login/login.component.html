@@ -2,13 +2,15 @@
   <legend class="fieldset-legend">Login</legend>
 
   <label class="label">Username</label>
-  <input type="username" formControlName="username" class="input error" placeholder="Username" />
+  <input type="username" formControlName="username" class="input" [class.input-error]="checkInvalidField('username')"
+    placeholder="Username" />
 
   <label class="label">Password</label>
-  <input type="password" formControlName="password" class="input" placeholder="Password" />
+  <input type="password" formControlName="password" class="input" [class.input-error]="checkInvalidField('password')"
+    placeholder="Password" />
 
   <button class="btn btn-outline btn-success mt-4" (click)="handleSubmit()">Login</button>
 
-  <div class="divider">Don't have account?<a href="" class="underline">Sign Up</a></div>
+  <div class="divider">Don't have account?<a routerLink="/register" class="underline">Sign Up</a></div>
 
 </fieldset>

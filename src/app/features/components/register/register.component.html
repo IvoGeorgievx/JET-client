@@ -1,0 +1,18 @@
+<fieldset [formGroup]="registerForm" class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
+  <legend class="fieldset-legend">Register</legend>
+
+  <label class="label">Username</label>
+  <input type="username" formControlName="username" [class.input-error]="checkInvalidField('username')" class="input"
+    placeholder="Username" />
+
+  <label class="label">Password</label>
+  <input type="password" formControlName="password" [class.input-error]="checkInvalidField('password')" class="input"
+    placeholder="Password" />
+
+  <button class="btn btn-outline btn-success mt-4" (click)="handleRegister()">Register</button>
+
+  <div class="divider">Already have account?<a routerLink="/login" class="underline">Sign In</a></div>
+
+
+
+</fieldset>
