@@ -5,7 +5,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 import { checkInvalidFields } from '@shared/utils/form-utils';
 
@@ -22,6 +22,7 @@ export class RegisterComponent implements OnInit {
   }>;
 
   private authService = inject(AuthService);
+  private router = inject(Router);
 
   ngOnInit(): void {
     this.initForm();
@@ -42,7 +43,9 @@ export class RegisterComponent implements OnInit {
 
     const { username, password } = this.registerForm.value;
 
-    this.authService.signUp({ username, password }).subscribe();
+    this.authService.signUp({ username, password }).subscribe({
+      next: () => this.router.navigate(['']),
+    });
   }
 
   public checkInvalidField(field: string): boolean {
