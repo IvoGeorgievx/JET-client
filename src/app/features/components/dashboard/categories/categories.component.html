@@ -1,0 +1,8 @@
+@for (category of categories; track category.id) {
+<li>{{category.id}}</li>
+}
+<button class="btn btn-primary" (click)="openModal()">open modal</button>
+
+@if (modalService.modalOpened()) {
+<jet-modal />
+}
