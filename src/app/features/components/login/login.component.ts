@@ -8,6 +8,7 @@ import {
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
+import { UserStore } from '@core/store/user.store';
 import { checkInvalidFields } from '@shared/utils/form-utils';
 import { tap } from 'rxjs';
 
@@ -19,6 +20,7 @@ import { tap } from 'rxjs';
 })
 export class LoginComponent implements OnInit {
   authService = inject(AuthService);
+  userStore = inject(UserStore);
 
   loginForm: FormGroup<{
     username: FormControl<string>;
@@ -50,7 +52,14 @@ export class LoginComponent implements OnInit {
     this.authService
       .signIn(this.loginForm.value as { username: string; password: string })
       .pipe(tap(() => console.log('hey')))
-      .subscribe();
+      .subscribe({
+        next: (response) => {
+          this.userStore.setUser({
+            id: response.user.id,
+            username: response.user.username,
+          });
+        },
+      });
   }
 
   public checkInvalidField(field: string): boolean {

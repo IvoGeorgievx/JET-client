@@ -1,4 +1,5 @@
 export interface User {
-  id: string;
-  username: string;
+  id: string | null;
+  username: string | null;
+  isLoading?: boolean;
 }
