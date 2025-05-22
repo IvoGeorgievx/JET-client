@@ -4,6 +4,7 @@ import { CategoryService } from '@core/services/category.service';
 import {
   patchState,
   signalStore,
+  withHooks,
   withMethods,
   withProps,
   withState,
@@ -18,6 +19,7 @@ const initialState = {
 };
 
 export const CategoryStore = signalStore(
+  { providedIn: 'root' },
   withState(initialState),
 
   withDevtools('categories'),
@@ -45,5 +47,33 @@ export const CategoryStore = signalStore(
         )
         .subscribe();
     },
-  }))
+
+    createCategory: (body: { name: string; type: string }) => {
+      patchState(store, { isLoading: true, error: null });
+      store._categoryService
+        .createCategory(body)
+        .pipe(
+          tap((category) => {
+            patchState(store, {
+              isLoading: false,
+              categories: [...store.categories(), category],
+            });
+          }),
+          catchError((error) => {
+            patchState(store, {
+              isLoading: false,
+              error: error.message || 'Failed to create category',
+            });
+            throw error;
+          })
+        )
+        .subscribe();
+    },
+  })),
+
+  withHooks({
+    onInit: (store) => {
+      store.getCategories();
+    },
+  })
 );

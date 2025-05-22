@@ -1,27 +1,71 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { CategoryService } from '@core/services/category.service';
-import { ModalService } from '@core/services/modal.service';
-import { ModalComponent } from '../../../../shared/components/modal/modal.component';
+import {
+  Component,
+  inject,
+  OnInit,
+  Signal,
+  WritableSignal,
+} from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { CategoryStore } from '@core/store/category.store';
+import { Category } from '@shared/types/category.type';
+import { checkInvalidFields } from '@shared/utils/form-utils';
+
+interface ICategoryForm {
+  name: FormControl<string>;
+  type: FormControl<string>;
+}
 
 @Component({
   selector: 'jet-categories',
-  imports: [ModalComponent],
+  imports: [ReactiveFormsModule],
   templateUrl: './categories.component.html',
   styleUrl: './categories.component.css',
 })
 export class CategoriesComponent implements OnInit {
-  categoryService = inject(CategoryService);
-  modalService = inject(ModalService);
+  categoryStore = inject(CategoryStore);
+  categories: Signal<Category[]>;
+  categoryForm: FormGroup<ICategoryForm>;
+
+  constructor() {
+    this.categories = this.categoryStore.categories;
+  }
 
   ngOnInit(): void {
-    this.categoryService.getCategories().subscribe();
+    this.initForm();
   }
 
-  get categories() {
-    return this.categoryService.categories();
+  private initForm(): void {
+    this.categoryForm = new FormGroup<ICategoryForm>({
+      name: new FormControl<string>('', {
+        nonNullable: true,
+        validators: Validators.required,
+      }),
+      type: new FormControl<string>('', {
+        nonNullable: true,
+        validators: Validators.required,
+      }),
+    });
   }
 
-  openModal(): void {
-    this.modalService.showModal();
+  createCategory() {
+    if (this.categoryForm.invalid) {
+      this.categoryForm.markAllAsTouched();
+      return;
+    }
+
+    const payload = this.categoryForm.getRawValue();
+
+    this.categoryStore.createCategory(payload);
+
+    this.categoryForm.reset();
+  }
+
+  checkInvalidField(field: string) {
+    return checkInvalidFields(this.categoryForm, field);
   }
 }

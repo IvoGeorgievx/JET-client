@@ -1,5 +1,4 @@
-import { Component, inject } from '@angular/core';
-import { UserStore } from '@core/store/user.store';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'jet-home',

@@ -3,7 +3,6 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { local } from '@shared/constants/environments';
 import { Category } from '@shared/types/category.type';
 import { catchError, Observable, tap, throwError } from 'rxjs';
-import { LocalStorageService } from './local-storage.service';
 
 @Injectable({
   providedIn: 'root',

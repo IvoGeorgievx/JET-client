@@ -1,8 +1,19 @@
-@for (category of categories; track category.id) {
+@for (category of categories(); track category.id) {
 <li>{{category.id}}</li>
 }
-<button class="btn btn-primary" (click)="openModal()">open modal</button>
 
-@if (modalService.modalOpened()) {
-<jet-modal />
-}
+<fieldset [formGroup]="categoryForm" class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
+  <legend class="fieldset-legend">Create Category</legend>
+
+  <label class="label">Name</label>
+  <input type="text" formControlName="name" class="input" [class.input-error]="checkInvalidField('name')"
+    placeholder="Name" />
+
+  <label class="label">Type</label>
+  <input type="text" formControlName="type" class="input" [class.input-error]="checkInvalidField('type')"
+    placeholder="Type" />
+
+  <button class="btn btn-outline btn-success mt-4" (click)="createCategory()">Create Category</button>
+
+
+</fieldset>
