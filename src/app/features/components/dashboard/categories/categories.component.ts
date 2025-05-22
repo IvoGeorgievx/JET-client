@@ -65,6 +65,12 @@ export class CategoriesComponent implements OnInit {
     this.categoryForm.reset();
   }
 
+  deleteCategory(id: string) {
+    if (!id) return;
+
+    this.categoryStore.deleteCategory(id);
+  }
+
   checkInvalidField(field: string) {
     return checkInvalidFields(this.categoryForm, field);
   }
