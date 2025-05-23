@@ -1,1 +1,34 @@
-<p>transactions works!</p>
+<div>
+  <p>expense: {{overallTransactions()?.expense}}</p>
+  <p>income: {{overallTransactions()?.income}}</p>
+</div>
+
+<fieldset [formGroup]="transactionForm" class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
+  <legend class="fieldset-legend">Create Transaction</legend>
+
+  <label class="label">Amount</label>
+  <input type="number" formControlName="amount" class="input"
+    [class.input-error]="transactionForm.get('amount')?.invalid && transactionForm.get('amount')?.touched"
+    placeholder="Amount" />
+
+  <label class="label">Description</label>
+  <input type="text" formControlName="description" class="input"
+    [class.input-error]="transactionForm.get('description')?.invalid && transactionForm.get('description')?.touched"
+    placeholder="Description" />
+
+  <label class="label">Type</label>
+  <select class="select" formControlName="type">
+    <option [value]="transactionType.EXPENSE">Expense</option>
+    <option [value]="transactionType.INCOME">Income</option>
+  </select>
+
+  <label class="label">Category</label>
+  <select class="select" formControlName="category">
+    @for (category of categoryStore.categories(); track category.id) {
+    <option [value]="category.id">{{category.name}}</option>
+    }
+  </select>
+
+  <button class="btn btn-outline btn-success mt-4" (click)="createTransaction()"
+    [disabled]="transactionForm.invalid">Create Transaction</button>
+</fieldset>

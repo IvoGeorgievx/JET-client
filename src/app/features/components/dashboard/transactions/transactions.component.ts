@@ -1,11 +1,77 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { CategoryStore } from '@core/store/category.store';
+import { TransactionStore } from '@core/store/transaction.store';
+import { Category } from '@shared/types/category.type';
+import { TransactionType } from '@shared/types/transaction.type';
+
+interface ITransactionForm {
+  amount: FormControl<number>;
+  description: FormControl<string>;
+  type: FormControl<TransactionType>;
+  category: FormControl<string>;
+}
 
 @Component({
   selector: 'jet-transactions',
-  imports: [],
+  imports: [ReactiveFormsModule],
   templateUrl: './transactions.component.html',
-  styleUrl: './transactions.component.css'
+  styleUrl: './transactions.component.css',
 })
-export class TransactionsComponent {
+export class TransactionsComponent implements OnInit {
+  transactionStore = inject(TransactionStore);
+  categoryStore = inject(CategoryStore);
+  overallTransactions = this.transactionStore.overallTransactions;
 
+  transactionType = TransactionType;
+
+  transactionForm: FormGroup<ITransactionForm>;
+
+  ngOnInit(): void {
+    this.initForm();
+  }
+
+  private initForm() {
+    this.transactionForm = new FormGroup<ITransactionForm>({
+      amount: new FormControl(0, {
+        nonNullable: true,
+        validators: [Validators.required, Validators.min(0.01)],
+      }),
+      description: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required, Validators.maxLength(255)],
+      }),
+      type: new FormControl(TransactionType.INCOME, {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
+      category: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
+    });
+  }
+
+  createTransaction() {
+    if (this.transactionForm.invalid) {
+      this.transactionForm.markAllAsTouched();
+      return;
+    }
+
+    const payload = this.transactionForm.getRawValue();
+    if (!payload.category) {
+      this.transactionForm.get('category')?.setErrors({ required: true });
+      return;
+    }
+    this.transactionStore.createTransaction({
+      ...payload,
+      categoryId: payload.category,
+    });
+    this.transactionForm.reset();
+  }
 }

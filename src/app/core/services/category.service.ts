@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { local } from '@shared/constants/environments';
 import { Category } from '@shared/types/category.type';
-import { catchError, Observable, tap, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
