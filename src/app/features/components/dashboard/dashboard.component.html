@@ -1,13 +1,15 @@
-@defer () {
-<jet-categories />
+<div class="flex gap-4">
+  @defer () {
+  <jet-categories />
 
-} @placeholder (minimum 500ms) {
-<span class="loading loading-infinity loading-lg"></span>
-}
+  } @placeholder (minimum 500ms) {
+  <span class="loading loading-infinity loading-lg"></span>
+  }
 
-@defer () {
-<jet-transactions />
+  @defer () {
+  <jet-transactions />
 
-} @placeholder (minimum 500ms) {
-<span class="loading loading-infinity loading-lg"></span>
-}
+  } @placeholder (minimum 500ms) {
+  <span class="loading loading-infinity loading-lg"></span>
+  }
+</div>

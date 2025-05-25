@@ -8,6 +8,7 @@ import {
 import { CategoryStore } from '@core/store/category.store';
 import { Category } from '@shared/types/category.type';
 import { checkInvalidFields } from '@shared/utils/form-utils';
+import { ModalComponent } from '../../../../shared/components/modal/modal.component';
 
 interface ICategoryForm {
   name: FormControl<string>;
@@ -16,7 +17,7 @@ interface ICategoryForm {
 
 @Component({
   selector: 'jet-categories',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, ModalComponent],
   templateUrl: './categories.component.html',
   styleUrl: './categories.component.css',
 })
@@ -24,6 +25,8 @@ export class CategoriesComponent implements OnInit {
   categoryStore = inject(CategoryStore);
   categories: Signal<Category[]>;
   categoryForm: FormGroup<ICategoryForm>;
+
+  modalOpened = false;
 
   constructor() {
     this.categories = this.categoryStore.categories;
@@ -67,5 +70,9 @@ export class CategoriesComponent implements OnInit {
 
   checkInvalidField(field: string) {
     return checkInvalidFields(this.categoryForm, field);
+  }
+
+  showModal() {
+    this.modalOpened = true;
   }
 }

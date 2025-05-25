@@ -1,34 +1,70 @@
-<div>
-  <p>expense: {{overallTransactions()?.expense}}</p>
-  <p>income: {{overallTransactions()?.income}}</p>
+<div class="flex gap-4">
+  <div class="flex flex-col gap-2">
+    <select class="select" (change)="changeTransactionPeriod($event)">
+      <option disabled selected>Pick a period</option>
+      <option [value]="transactionPeriod.DAILY">Daily</option>
+      <option [value]="transactionPeriod.WEEKLY">Weekly</option>
+      <option [value]="transactionPeriod.MONTHLY">Monthly</option>
+      <option [value]="transactionPeriod.YEARLY">Yearly</option>
+    </select>
+    <p>
+      expense: @if (transactionStore.isLoading()) {
+      <span class="loading loading-infinity loading-lg"></span>
+      } @else {
+      {{ overallTransactions()?.expense | number : "1.2-2" }}
+      }
+    </p>
+    <p>
+      income: @if (transactionStore.isLoading()) {
+      <span class="loading loading-infinity loading-lg"></span>
+      } @else {
+      {{ overallTransactions()?.income | number : "1.2-2" }}
+      }
+    </p>
+  </div>
+  <button type="button" class="btn btn-accent" (click)="openModal()">
+    Open Modal
+  </button>
 </div>
 
-<fieldset [formGroup]="transactionForm" class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
-  <legend class="fieldset-legend">Create Transaction</legend>
+<ng-template #modalContent>
+  <div class="modal-action">
+    <fieldset [formGroup]="transactionForm" class="fieldset bg-base-200 border-base-300 rounded-box w-full border p-4">
+      <label class="label">Amount</label>
+      <input type="number" formControlName="amount" class="input" [class.input-error]="
+          transactionForm.get('amount')?.invalid &&
+          transactionForm.get('amount')?.touched
+        " placeholder="Amount" />
 
-  <label class="label">Amount</label>
-  <input type="number" formControlName="amount" class="input"
-    [class.input-error]="transactionForm.get('amount')?.invalid && transactionForm.get('amount')?.touched"
-    placeholder="Amount" />
+      <label class="label">Description</label>
+      <input type="text" formControlName="description" class="input" [class.input-error]="
+          transactionForm.get('description')?.invalid &&
+          transactionForm.get('description')?.touched
+        " placeholder="Description" />
 
-  <label class="label">Description</label>
-  <input type="text" formControlName="description" class="input"
-    [class.input-error]="transactionForm.get('description')?.invalid && transactionForm.get('description')?.touched"
-    placeholder="Description" />
+      <label class="label">Type</label>
+      <select class="select" formControlName="type">
+        <option [value]="transactionType.EXPENSE">Expense</option>
+        <option [value]="transactionType.INCOME">Income</option>
+      </select>
 
-  <label class="label">Type</label>
-  <select class="select" formControlName="type">
-    <option [value]="transactionType.EXPENSE">Expense</option>
-    <option [value]="transactionType.INCOME">Income</option>
-  </select>
+      <label class="label">Category</label>
+      <select class="select" formControlName="category">
+        @for (category of categoryStore.categories(); track category.id) {
+        <option [value]="category.id">{{ category.name }}</option>
+        }
+      </select>
 
-  <label class="label">Category</label>
-  <select class="select" formControlName="category">
-    @for (category of categoryStore.categories(); track category.id) {
-    <option [value]="category.id">{{category.name}}</option>
-    }
-  </select>
+      <div class="flex gap-2 mt-4 self-end flex-row-reverse">
+        <button class="btn btn-outline btn-success" (click)="createTransaction()" [disabled]="transactionForm.invalid">
+          Create Transaction
+        </button>
+        <button class="btn" (click)="closeModal()">Cancel</button>
+      </div>
+    </fieldset>
+  </div>
+</ng-template>
+<ng-template #heading> Create Transaction </ng-template>
 
-  <button class="btn btn-outline btn-success mt-4" (click)="createTransaction()"
-    [disabled]="transactionForm.invalid">Create Transaction</button>
-</fieldset>
+<jet-modal [contentTemplate]="modalContent" [headingTemplate]="heading" [isOpen]="showModal"
+  (onCancel)="closeModal()" />

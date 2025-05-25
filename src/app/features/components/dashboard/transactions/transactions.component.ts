@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import {
   FormControl,
@@ -7,8 +8,11 @@ import {
 } from '@angular/forms';
 import { CategoryStore } from '@core/store/category.store';
 import { TransactionStore } from '@core/store/transaction.store';
-import { Category } from '@shared/types/category.type';
-import { TransactionType } from '@shared/types/transaction.type';
+import {
+  TransactionPeriod,
+  TransactionType,
+} from '@shared/types/transaction.type';
+import { ModalComponent } from '../../../../shared/components/modal/modal.component';
 
 interface ITransactionForm {
   amount: FormControl<number>;
@@ -19,7 +23,7 @@ interface ITransactionForm {
 
 @Component({
   selector: 'jet-transactions',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule, ModalComponent],
   templateUrl: './transactions.component.html',
   styleUrl: './transactions.component.css',
 })
@@ -28,7 +32,10 @@ export class TransactionsComponent implements OnInit {
   categoryStore = inject(CategoryStore);
   overallTransactions = this.transactionStore.overallTransactions;
 
+  showModal = false;
+
   transactionType = TransactionType;
+  transactionPeriod = TransactionPeriod;
 
   transactionForm: FormGroup<ITransactionForm>;
 
@@ -73,5 +80,20 @@ export class TransactionsComponent implements OnInit {
       categoryId: payload.category,
     });
     this.transactionForm.reset();
+    this.showModal = false;
+  }
+
+  changeTransactionPeriod(event: Event) {
+    const period = (event.target as HTMLSelectElement)
+      .value as TransactionPeriod;
+
+    this.transactionStore.getOverallTransactions(period);
+  }
+  openModal() {
+    this.showModal = true;
+  }
+
+  closeModal() {
+    this.showModal = false;
   }
 }

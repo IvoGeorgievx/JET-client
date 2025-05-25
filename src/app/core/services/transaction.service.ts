@@ -5,6 +5,7 @@ import {
   CreateTransaction,
   OverallTransaction,
   Transaction,
+  TransactionPeriod,
 } from '@shared/types/transaction.type';
 import { Observable } from 'rxjs';
 
@@ -21,9 +22,16 @@ export class TransactionService {
     );
   }
 
-  getOverallTransaction(): Observable<OverallTransaction> {
+  getOverallTransaction(
+    period: TransactionPeriod
+  ): Observable<OverallTransaction> {
     return this.http.get<OverallTransaction>(
-      `${local.API_URL}/transactions/overall`
+      `${local.API_URL}/transactions/overall`,
+      {
+        params: {
+          period,
+        },
+      }
     );
   }
 }

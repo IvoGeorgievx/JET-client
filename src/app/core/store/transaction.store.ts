@@ -3,6 +3,7 @@ import {
   CreateTransaction,
   OverallTransaction,
   Transaction,
+  TransactionPeriod,
 } from './../../shared/types/transaction.type';
 import {
   patchState,
@@ -41,12 +42,14 @@ export const TransactionStore = signalStore(
   })),
 
   withMethods((store) => ({
-    getOverallTransactions: () => {
+    getOverallTransactions: (
+      period: TransactionPeriod = TransactionPeriod.WEEKLY
+    ) => {
       patchState(store, {
         isLoading: true,
       });
       store._transactionService
-        .getOverallTransaction()
+        .getOverallTransaction(period)
         .pipe(
           tap((overallTransactions) => {
             patchState(store, {

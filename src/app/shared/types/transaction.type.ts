@@ -6,10 +6,10 @@ export enum TransactionType {
 }
 
 export enum TransactionPeriod {
-  DAILY,
-  WEEKLY,
-  MONTHLY,
-  YEARLY,
+  DAILY = 'Daily',
+  WEEKLY = 'Weekly',
+  MONTHLY = 'Monthly',
+  YEARLY = 'Yearly',
 }
 
 interface BaseTransaction {

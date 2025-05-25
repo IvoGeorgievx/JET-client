@@ -1,12 +1,27 @@
-<dialog id="my_modal_1" class="modal">
+<div class="modal" [class.modal-open]="isOpen()">
   <div class="modal-box">
-    <h3 class="text-lg font-bold">Hello!</h3>
-    <p class="py-4">Press ESC key or click the button below to close</p>
+    <div class="flex justify-between items-center mb-4">
+      @if (headingTemplate()) {
+      <h3 class="text-lg font-bold">
+        <ng-container [ngTemplateOutlet]="headingTemplate()" />
+      </h3>
+
+      }
+      <button class="btn btn-sm btn-circle btn-ghost" (click)="onCancel.emit()">
+        ✕
+      </button>
+    </div>
+
+    <div class="py-4">
+      <ng-container [ngTemplateOutlet]="contentTemplate()" />
+    </div>
+
     <div class="modal-action">
-      <form method="dialog">
-        <button class="btn">Close</button>
-      </form>
+      @if (actionsTemplate()) {
+      <ng-container [ngTemplateOutlet]="actionsTemplate() ?? null" />
+      }
     </div>
   </div>
-</dialog>
-<div>big fat test</div>
+
+  <div class="modal-backdrop custom-backdrop" (click)="onCancel.emit()"></div>
+</div>

@@ -1,20 +1,29 @@
 @for (category of categories(); track category.id) {
-<li>{{category.id}}</li>
-<button class="btn btn-error" (click)="deleteCategory(category.id)">delete category</button>
+<li>{{ category.id }}</li>
+<button class="btn btn-error" (click)="deleteCategory(category.id)">
+  delete category
+</button>
 }
 
-<fieldset [formGroup]="categoryForm" class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
-  <legend class="fieldset-legend">Create Category</legend>
+<button class="btn btn-warning" (click)="showModal()">Create category</button>
 
-  <label class="label">Name</label>
-  <input type="text" formControlName="name" class="input" [class.input-error]="checkInvalidField('name')"
-    placeholder="Name" />
+<ng-template #heading> Create Category </ng-template>
 
-  <label class="label">Type</label>
-  <input type="text" formControlName="type" class="input" [class.input-error]="checkInvalidField('type')"
-    placeholder="Type" />
+<ng-template #content>
+  <fieldset [formGroup]="categoryForm" class="fieldset w-full bg-base-200 border-base-300 rounded-box border p-4">
+    <label class="label">Name</label>
+    <input type="text" formControlName="name" class="input" [class.input-error]="checkInvalidField('name')"
+      placeholder="Name" />
 
-  <button class="btn btn-outline btn-success mt-4" (click)="createCategory()">Create Category</button>
+    <label class="label">Type</label>
+    <input type="text" formControlName="type" class="input" [class.input-error]="checkInvalidField('type')"
+      placeholder="Type" />
 
+    <button class="btn btn-outline btn-success mt-4" (click)="createCategory()">
+      Create Category
+    </button>
+  </fieldset>
+</ng-template>
 
-</fieldset>
+<jet-modal [headingTemplate]="heading" [contentTemplate]="content" [isOpen]="modalOpened"
+  (onCancel)="modalOpened = false" />
