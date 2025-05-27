@@ -18,14 +18,22 @@ import { TransactionService } from '@core/services/transaction.service';
 import { catchError, tap } from 'rxjs';
 
 interface ITransactionStore {
-  transactions: Transaction[];
+  history: {
+    transactions: Transaction[];
+    total?: number;
+    totalPages?: number;
+  };
   overallTransactions: OverallTransaction | null;
   error: null | string;
   isLoading: boolean;
 }
 
 const initialState: ITransactionStore = {
-  transactions: [],
+  history: {
+    transactions: [],
+    total: 0,
+    totalPages: 0,
+  },
   overallTransactions: null,
   error: null,
   isLoading: false,
@@ -80,7 +88,9 @@ export const TransactionStore = signalStore(
         .pipe(
           tap((transaction) => {
             patchState(store, {
-              transactions: [...store.transactions(), transaction],
+              history: {
+                transactions: [...store.history.transactions(), transaction],
+              },
               isLoading: false,
             });
             store.getOverallTransactions();
@@ -98,9 +108,47 @@ export const TransactionStore = signalStore(
     },
   })),
 
+  withMethods((store) => ({
+    getTransactionHistory: (
+      period: TransactionPeriod = TransactionPeriod.WEEKLY,
+      page: number = 0,
+      perPage: number = 5
+    ) => {
+      patchState(store, { isLoading: true }),
+        store._transactionService
+          .getTransactionHistory(period, page, perPage)
+          .pipe(
+            tap((data) => {
+              patchState(store, {
+                history: {
+                  transactions: data.transactions,
+                  total: data.total,
+                  totalPages: data.totalPages,
+                },
+                isLoading: false,
+              });
+            }),
+            catchError((error) => {
+              patchState(store, {
+                isLoading: false,
+                error: error || 'Failed to get transaction history.',
+                history: {
+                  transactions: [],
+                  total: 0,
+                  totalPages: 0,
+                },
+              });
+              throw error;
+            })
+          )
+          .subscribe();
+    },
+  })),
+
   withHooks({
     onInit: (store) => {
       store.getOverallTransactions();
+      store.getTransactionHistory();
     },
   })
 );

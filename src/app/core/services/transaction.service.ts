@@ -22,6 +22,28 @@ export class TransactionService {
     );
   }
 
+  getTransactionHistory(
+    period: TransactionPeriod,
+    page: number,
+    perPage: number
+  ): Observable<{
+    transactions: Transaction[];
+    total: number;
+    totalPages: number;
+  }> {
+    return this.http.get<{
+      transactions: Transaction[];
+      total: number;
+      totalPages: number;
+    }>(`${local.API_URL}/transactions`, {
+      params: {
+        period,
+        page,
+        perPage,
+      },
+    });
+  }
+
   getOverallTransaction(
     period: TransactionPeriod
   ): Observable<OverallTransaction> {

@@ -1,0 +1,5 @@
+<div class="join">
+  <button class="join-item btn" [disabled]="disablePrevPage" (click)="prevPage()">«</button>
+  <button class="join-item btn">{{currentPage()}}</button>
+  <button class="join-item btn" [disabled]="disableNextPage" (click)="nextPage()">»</button>
+</div>
