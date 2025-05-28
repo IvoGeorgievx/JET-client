@@ -1,0 +1,7 @@
+@if (isVisible) {
+<div class="toast toast-bottom toast-end">
+  <div class="alert" [ngClass]="getToastClass(type())">
+    <span>{{ text() }}</span>
+  </div>
+</div>
+}

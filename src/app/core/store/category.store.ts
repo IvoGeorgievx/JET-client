@@ -10,7 +10,7 @@ import {
   withState,
 } from '@ngrx/signals';
 import { Category } from '@shared/types/category.type';
-import { catchError, takeUntil, tap } from 'rxjs';
+import { catchError, Observable, takeUntil, tap } from 'rxjs';
 
 const initialState = {
   categories: [] as Category[],
@@ -48,26 +48,26 @@ export const CategoryStore = signalStore(
         .subscribe();
     },
 
-    createCategory: (body: { name: string; type: string }) => {
+    createCategory: (body: {
+      name: string;
+      type: string;
+    }): Observable<Category> => {
       patchState(store, { isLoading: true, error: null });
-      store._categoryService
-        .createCategory(body)
-        .pipe(
-          tap((category) => {
-            patchState(store, {
-              isLoading: false,
-              categories: [...store.categories(), category],
-            });
-          }),
-          catchError((error) => {
-            patchState(store, {
-              isLoading: false,
-              error: error.message || 'Failed to create category',
-            });
-            throw error;
-          })
-        )
-        .subscribe();
+      return store._categoryService.createCategory(body).pipe(
+        tap((category) => {
+          patchState(store, {
+            isLoading: false,
+            categories: [...store.categories(), category],
+          });
+        }),
+        catchError((error) => {
+          patchState(store, {
+            isLoading: false,
+            error: error.message || 'Failed to create category',
+          });
+          throw error;
+        })
+      );
     },
 
     deleteCategory: (id: string) => {
