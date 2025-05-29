@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { CategoriesComponent } from './categories/categories.component';
-import { TransactionsComponent } from './transactions/transactions.component';
-import { TransactionHistoryComponent } from './transaction-history/transaction-history.component';
 import { ToastComponent } from '../../../shared/components/toast/toast.component';
+import { CategoriesComponent } from './categories/categories.component';
+import { TransactionHistoryComponent } from './transaction-history/transaction-history.component';
+import { TransactionsComponent } from './transactions/transactions.component';
 
 @Component({
   selector: 'jet-dashboard',
@@ -10,7 +10,6 @@ import { ToastComponent } from '../../../shared/components/toast/toast.component
     CategoriesComponent,
     TransactionsComponent,
     TransactionHistoryComponent,
-    ToastComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',

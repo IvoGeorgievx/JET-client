@@ -1,4 +1,4 @@
-import { inject } from '@angular/core';
+import { computed, inject } from '@angular/core';
 import { AuthService } from '@core/services/auth.service';
 import { LocalStorageService } from '@core/services/local-storage.service';
 import { tapResponse } from '@ngrx/operators';
@@ -26,9 +26,10 @@ export const UserStore = signalStore(
   withDevtools('user'),
   withState(initialUserState),
 
-  withProps(() => ({
+  withProps((store) => ({
     _authService: inject(AuthService),
     _localStorageService: inject(LocalStorageService),
+    isLoggedIn: computed(() => !!store.id() && !!store.username()),
   })),
 
   withMethods((store) => ({
