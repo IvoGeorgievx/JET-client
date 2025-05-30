@@ -8,6 +8,7 @@ import {
 import { User } from '@shared/types/user.type';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { LocalStorageService } from './local-storage.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -15,6 +16,7 @@ import { LocalStorageService } from './local-storage.service';
 export class AuthService {
   private localStorageService = inject(LocalStorageService);
   private http = inject(HttpClient);
+  private router = inject(Router);
 
   getCurrentUser(): Observable<User> {
     return this.http.get<User>(`${local.API_URL}/user/info`);
@@ -29,6 +31,7 @@ export class AuthService {
       .pipe(
         tap((response) => {
           this.localStorageService.setItem('token', response.token);
+          this.router.navigate(['dashboard']);
         }),
         catchError((error) => {
           console.error(error);

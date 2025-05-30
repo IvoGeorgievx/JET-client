@@ -1,8 +1,8 @@
 import { Category } from './category.type';
 
 export enum TransactionType {
-  INCOME,
-  EXPENSE,
+  INCOME = 'INCOME',
+  EXPENSE = 'EXPENSE',
 }
 
 export enum TransactionPeriod {

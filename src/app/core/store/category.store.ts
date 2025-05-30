@@ -75,27 +75,24 @@ export const CategoryStore = signalStore(
         isLoading: true,
         error: null,
       });
-      store._categoryService
-        .deleteCategory(id)
-        .pipe(
-          tap(() => {
-            const categories = store
-              .categories()
-              .filter((category) => category.id !== id);
-            patchState(store, {
-              isLoading: false,
-              categories,
-            });
-          }),
-          catchError((error) => {
-            patchState(store, {
-              isLoading: false,
-              error: error.message || 'Failed to delete category',
-            });
-            throw error;
-          })
-        )
-        .subscribe();
+      return store._categoryService.deleteCategory(id).pipe(
+        tap(() => {
+          const categories = store
+            .categories()
+            .filter((category) => category.id !== id);
+          patchState(store, {
+            isLoading: false,
+            categories,
+          });
+        }),
+        catchError((error) => {
+          patchState(store, {
+            isLoading: false,
+            error: error.message || 'Failed to delete category',
+          });
+          throw error;
+        })
+      );
     },
   })),
 

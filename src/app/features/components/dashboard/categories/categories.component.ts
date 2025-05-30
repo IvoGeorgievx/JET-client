@@ -94,7 +94,22 @@ export class CategoriesComponent implements OnInit {
   deleteCategory(id: string) {
     if (!id) return;
 
-    this.categoryStore.deleteCategory(id);
+    this.categoryStore.deleteCategory(id).subscribe({
+      next: () => {
+        this.showToast = true;
+        this.toastInfo.set({
+          text: 'Category successfully deleted.',
+          type: 'success',
+        });
+      },
+      error: () => {
+        this.showToast = true;
+        this.toastInfo.set({
+          text: 'Failed to delete category.',
+          type: 'error',
+        });
+      },
+    });
   }
 
   checkInvalidField(field: string) {

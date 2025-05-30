@@ -1,5 +1,29 @@
 <div class="join">
-  <button class="join-item btn" [disabled]="disablePrevPage" (click)="prevPage()">«</button>
-  <button class="join-item btn">{{currentPage()}}</button>
-  <button class="join-item btn" [disabled]="disableNextPage" (click)="nextPage()">»</button>
+  <button class="join-item btn" [disabled]="disablePrevPage" (click)="prevPage()">
+    «
+  </button>
+  <button class="join-item btn">{{ currentPage() }}</button>
+  <button class="join-item btn" [disabled]="disableNextPage" (click)="nextPage()">
+    »
+  </button>
+</div>
+<div class="flex justify-center items-center">
+  <div class="tabs tabs-border flex justify-center items-center">
+    @for (tab of tabs(); track $index; let i = $index) {
+    <ng-container>
+      <input type="radio" class="tab" name="tab" (change)="activeTab = i" [checked]="activeTab === i"
+        [attr.aria-label]="tab.label" (click)="activeTab = i" />
+      @if (activeTab === i) {
+      <div class="tab-content border-base-300 bg-base-100 p-4">
+        @for (transaction of tab.content; track $index) {
+        <p>{{ transaction.amount }}</p>
+        <p>{{ transaction.description }}</p>
+        <div class="divider"></div>
+        }
+
+      </div>
+      }
+    </ng-container>
+    }
+  </div>
 </div>

@@ -24,12 +24,12 @@ const initialUserState: User = {
 export const UserStore = signalStore(
   { providedIn: 'root' },
   withDevtools('user'),
-  withState(initialUserState),
+  withState({ ...initialUserState, isHydrated: false }),
 
   withProps((store) => ({
     _authService: inject(AuthService),
     _localStorageService: inject(LocalStorageService),
-    isLoggedIn: computed(() => !!store.id() && !!store.username()),
+    isLoggedIn: computed(() => !!store.id && !!store.username),
   })),
 
   withMethods((store) => ({
@@ -47,9 +47,13 @@ export const UserStore = signalStore(
                 patchState(store, {
                   id: response.id,
                   username: response.username,
+                  isHydrated: true,
                 });
               },
-              error: (err) => console.error(err),
+              error: (err) => {
+                console.error(err);
+                patchState(store, { isHydrated: true });
+              },
               finalize: () => {
                 patchState(store, { isLoading: false });
               },
@@ -63,6 +67,16 @@ export const UserStore = signalStore(
       patchState(store, {
         id: user.id,
         username: user.username,
+        isHydrated: true,
+      });
+    },
+
+    logout() {
+      store._localStorageService.removeItem('token');
+      patchState(store, {
+        id: null,
+        username: null,
+        isHydrated: true,
       });
     },
   })),
@@ -72,6 +86,8 @@ export const UserStore = signalStore(
       const token = store._localStorageService.getItem('token');
       if (token) {
         store.fetchCurrentUser();
+      } else {
+        patchState(store, { isHydrated: true });
       }
     },
   })
