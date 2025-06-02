@@ -6,8 +6,8 @@ import {
   inject,
   Signal,
   signal,
-  WritableSignal,
 } from '@angular/core';
+import { CategoryStore } from '@core/store/category.store';
 import { TransactionStore } from '@core/store/transaction.store';
 import {
   Transaction,
@@ -27,14 +27,27 @@ interface ITabs {
 })
 export class TransactionHistoryComponent {
   transactionStore = inject(TransactionStore);
+  categoryStore = inject(CategoryStore);
 
   transactions = this.transactionStore.history.transactions;
-
   totalPages = this.transactionStore.history.totalPages;
-
   currentPage = signal<number>(1);
 
+  transactionPeriod = TransactionPeriod;
+  currentTransactionPeriod = TransactionPeriod.MONTHLY;
+
+  categoryFilter = signal<string>('');
+
   activeTab = 0;
+
+  filteredTransactions = computed(() => {
+    const filter = this.categoryFilter();
+    const transactions = this.transactions();
+    if (!filter) return transactions;
+    return transactions.filter(
+      (transaction) => transaction.categoryDTO.name === filter
+    );
+  });
 
   tabs: Signal<ITabs[]> = computed(() => {
     const transactions = this.transactions();
@@ -42,28 +55,50 @@ export class TransactionHistoryComponent {
     return [
       {
         label: 'All',
-        content: transactions,
+        content: this.filteredTransactions(),
       },
       {
         label: 'Expense',
-        content: transactions.filter(
+        content: this.filteredTransactions().filter(
           (transaction) => transaction.type === TransactionType.EXPENSE
         ),
       },
       {
         label: 'Income',
-        content: transactions.filter(
+        content: this.filteredTransactions().filter(
           (transaction) => transaction.type === TransactionType.INCOME
         ),
       },
     ];
   });
 
+  categories = computed(() => {
+    return this.categoryStore.categories();
+  });
+
+  constructor() {
+    this.transactionStore.getTransactionHistory(this.currentTransactionPeriod);
+  }
+
+  changeTransactionPeriod(event: Event) {
+    const transactionPeriod = (event.target as HTMLSelectElement).value;
+    this.currentTransactionPeriod = transactionPeriod as TransactionPeriod;
+    this.transactionStore.getTransactionHistory(
+      this.currentTransactionPeriod,
+      this.currentPage() - 1
+    );
+  }
+
+  changeCategoryFilter(event: Event): void {
+    const filter = (event.target as HTMLSelectElement).value;
+    this.categoryFilter.set(filter);
+  }
+
   nextPage() {
     this.currentPage.update((value) => value + 1);
     if ((this.currentPage?.() ?? 1) > (this.totalPages?.() ?? 1)) return;
     this.transactionStore.getTransactionHistory(
-      TransactionPeriod.WEEKLY,
+      this.currentTransactionPeriod,
       this.currentPage() - 1,
       5
     );
@@ -81,7 +116,7 @@ export class TransactionHistoryComponent {
     if (this.currentPage() > 1) {
       this.currentPage.update((value) => value - 1);
       this.transactionStore.getTransactionHistory(
-        TransactionPeriod.WEEKLY,
+        this.currentTransactionPeriod,
         this.currentPage() - 1,
         5
       );

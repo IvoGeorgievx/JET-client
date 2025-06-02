@@ -148,7 +148,6 @@ export const TransactionStore = signalStore(
   withHooks({
     onInit: (store) => {
       store.getOverallTransactions();
-      store.getTransactionHistory();
     },
   })
 );

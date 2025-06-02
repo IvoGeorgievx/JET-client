@@ -16,15 +16,17 @@ interface BaseTransaction {
   amount: number;
   description: string;
   type: TransactionType;
-  categoryId: string;
 }
 
 export interface Transaction extends BaseTransaction {
   id: string;
   userId: string;
+  categoryDTO: Category;
 }
 
-export interface CreateTransaction extends BaseTransaction {}
+export interface CreateTransaction extends BaseTransaction {
+  categoryId: string;
+}
 
 export interface OverallTransaction {
   income: number;

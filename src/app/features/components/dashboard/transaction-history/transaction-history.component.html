@@ -1,13 +1,19 @@
-<div class="join">
-  <button class="join-item btn" [disabled]="disablePrevPage" (click)="prevPage()">
-    «
-  </button>
-  <button class="join-item btn">{{ currentPage() }}</button>
-  <button class="join-item btn" [disabled]="disableNextPage" (click)="nextPage()">
-    »
-  </button>
+<div class="flex gap-2">
+  <select class="select" id="transaction-period" (change)="changeTransactionPeriod($event)">
+    <option disabled selected>Pick a period</option>
+    <option [value]="transactionPeriod.DAILY">Daily</option>
+    <option [value]="transactionPeriod.WEEKLY">Weekly</option>
+    <option [value]="transactionPeriod.MONTHLY">Monthly</option>
+    <option [value]="transactionPeriod.YEARLY">Yearly</option>
+  </select>
+  <select class="select" id="category-filter" (change)="changeCategoryFilter($event)">
+    <option value="">All</option>
+    @for (category of categories(); track $index) {
+    <option [value]="category.name">{{category.name}}</option>
+    }
+  </select>
 </div>
-<div class="flex justify-center items-center">
+<div class="flex flex-col gap-4 justify-center items-center">
   <div class="tabs tabs-border flex justify-center items-center">
     @for (tab of tabs(); track $index; let i = $index) {
     <ng-container>
@@ -16,14 +22,29 @@
       @if (activeTab === i) {
       <div class="tab-content border-base-300 bg-base-100 p-4">
         @for (transaction of tab.content; track $index) {
-        <p>{{ transaction.amount }}</p>
-        <p>{{ transaction.description }}</p>
+        <div class="flex justify-between items-center">
+          <div>
+            <p>{{ transaction.amount }}</p>
+            <p>{{ transaction.description }}</p>
+          </div>
+          <div>
+            <p>{{ transaction.categoryDTO.name }}</p>
+          </div>
+        </div>
         <div class="divider"></div>
         }
-
       </div>
       }
     </ng-container>
     }
+  </div>
+  <div class="join">
+    <button class="join-item btn" [disabled]="disablePrevPage" (click)="prevPage()">
+      «
+    </button>
+    <button class="join-item btn">{{ currentPage() }}</button>
+    <button class="join-item btn" [disabled]="disableNextPage" (click)="nextPage()">
+      »
+    </button>
   </div>
 </div>
