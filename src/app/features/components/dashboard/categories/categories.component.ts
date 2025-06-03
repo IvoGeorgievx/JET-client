@@ -15,6 +15,7 @@ import { ToastComponent } from '../../../../shared/components/toast/toast.compon
 interface ICategoryForm {
   name: FormControl<string>;
   type: FormControl<string>;
+  budget: FormControl<number | null>;
 }
 
 @Component({
@@ -59,6 +60,7 @@ export class CategoriesComponent implements OnInit {
         nonNullable: true,
         validators: Validators.required,
       }),
+      budget: new FormControl<number | null>(null),
     });
   }
 

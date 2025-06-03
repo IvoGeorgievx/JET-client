@@ -51,6 +51,7 @@ export const CategoryStore = signalStore(
     createCategory: (body: {
       name: string;
       type: string;
+      budget: number | null;
     }): Observable<Category> => {
       patchState(store, { isLoading: true, error: null });
       return store._categoryService.createCategory(body).pipe(

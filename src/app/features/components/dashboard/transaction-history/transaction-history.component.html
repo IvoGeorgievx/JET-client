@@ -20,7 +20,7 @@
       <input type="radio" class="tab" name="tab" (change)="activeTab = i" [checked]="activeTab === i"
         [attr.aria-label]="tab.label" (click)="activeTab = i" />
       @if (activeTab === i) {
-      <div class="tab-content border-base-300 bg-base-100 p-4">
+      <div class="tab-content border-base-300 bg-base-100 p-4 min-w-60">
         @for (transaction of tab.content; track $index) {
         <div class="flex justify-between items-center">
           <div>
