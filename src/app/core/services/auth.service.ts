@@ -9,6 +9,7 @@ import { User } from '@shared/types/user.type';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { LocalStorageService } from './local-storage.service';
 import { Router } from '@angular/router';
+import { UserStore } from '@core/store/user.store';
 
 @Injectable({
   providedIn: 'root',
@@ -38,10 +39,6 @@ export class AuthService {
           return throwError(() => error);
         })
       );
-  }
-
-  signOut(): void {
-    this.localStorageService.removeItem('token');
   }
 
   signUp(body: {

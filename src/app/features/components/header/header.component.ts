@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '@core/services/auth.service';
+import { UserStore } from '@core/store/user.store';
 
 @Component({
   selector: 'jet-header',
@@ -7,4 +9,12 @@ import { RouterModule } from '@angular/router';
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
 })
-export class HeaderComponent {}
+export class HeaderComponent {
+  userStore = inject(UserStore);
+  router = inject(Router);
+
+  logout() {
+    this.userStore.logout();
+    this.router.navigate(['login']);
+  }
+}

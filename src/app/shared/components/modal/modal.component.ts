@@ -1,9 +1,9 @@
-import { NgTemplateOutlet } from '@angular/common';
+import { CommonModule, NgTemplateOutlet } from '@angular/common';
 import { Component, input, output, TemplateRef } from '@angular/core';
 
 @Component({
   selector: 'jet-modal',
-  imports: [NgTemplateOutlet],
+  imports: [NgTemplateOutlet, CommonModule],
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.css',
 })
@@ -13,6 +13,7 @@ export class ModalComponent {
   actionsTemplate = input<TemplateRef<any>>();
 
   isOpen = input.required<boolean>();
+  showCloseButton = input<boolean>(true);
 
   onSave = output();
   onCancel = output();

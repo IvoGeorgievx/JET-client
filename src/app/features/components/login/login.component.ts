@@ -5,7 +5,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 import { UserStore } from '@core/store/user.store';
 import { checkInvalidFields } from '@shared/utils/form-utils';
@@ -20,6 +20,7 @@ import { tap } from 'rxjs';
 export class LoginComponent implements OnInit {
   authService = inject(AuthService);
   userStore = inject(UserStore);
+  router = inject(Router);
 
   loginForm: FormGroup<{
     username: FormControl<string>;
@@ -56,7 +57,9 @@ export class LoginComponent implements OnInit {
           this.userStore.setUser({
             id: response.user.id,
             username: response.user.username,
+            isFirstLogin: response.user.isFirstLogin,
           });
+          return this.router.navigate(['dashboard']);
         },
       });
   }

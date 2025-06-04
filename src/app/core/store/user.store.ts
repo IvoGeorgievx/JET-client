@@ -19,6 +19,7 @@ const initialUserState: User = {
   id: null,
   username: null,
   isLoading: false,
+  isFirstLogin: null,
 };
 
 export const UserStore = signalStore(
@@ -29,7 +30,7 @@ export const UserStore = signalStore(
   withProps((store) => ({
     _authService: inject(AuthService),
     _localStorageService: inject(LocalStorageService),
-    isLoggedIn: computed(() => !!store.id && !!store.username),
+    isLoggedIn: computed(() => !!store.id() && !!store.username()),
   })),
 
   withMethods((store) => ({
@@ -48,6 +49,7 @@ export const UserStore = signalStore(
                   id: response.id,
                   username: response.username,
                   isHydrated: true,
+                  isFirstLogin: response.isFirstLogin,
                 });
               },
               error: (err) => {
@@ -68,6 +70,7 @@ export const UserStore = signalStore(
         id: user.id,
         username: user.username,
         isHydrated: true,
+        isFirstLogin: user.isFirstLogin,
       });
     },
 

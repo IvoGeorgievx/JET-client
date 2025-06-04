@@ -3,6 +3,7 @@ export interface LoginResponse {
   user: {
     id: string;
     username: string;
+    isFirstLogin: boolean | null;
   };
 }
 

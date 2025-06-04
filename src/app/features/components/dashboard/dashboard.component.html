@@ -11,3 +11,20 @@
     <jet-transaction-history />
   </div>
 </div>
+
+<ng-template #heading>
+  <ul class="steps text-xs">
+    <li class="step step-primary step-m">Register</li>
+    <li class="step step-primary step-m">Choose plan</li>
+    <li class="step step-m">Purchase</li>
+    <li class="step step-m">Receive Product</li>
+  </ul>
+</ng-template>
+<ng-template #content></ng-template>
+<ng-template #actions></ng-template>
+
+<!-- change the condition later on -->
+@if (!isFirstLogin) {
+<jet-modal [headingTemplate]="heading" [contentTemplate]="content" [actionsTemplate]="actions" [isOpen]="modalOpened"
+  (onCancel)="modalOpened = false" [showCloseButton]="false" />
+}

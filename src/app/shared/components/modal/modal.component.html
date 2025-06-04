@@ -1,15 +1,16 @@
 <div class="modal" [class.modal-open]="isOpen()">
   <div class="modal-box">
-    <div class="flex justify-between items-center mb-4">
+    <div class="flex items-center mb-4" [ngClass]="showCloseButton() ? 'justify-between' : 'justify-center'">
       @if (headingTemplate()) {
       <h3 class="text-lg font-bold">
         <ng-container [ngTemplateOutlet]="headingTemplate()" />
       </h3>
 
-      }
+      } @if (showCloseButton()) {
       <button class="btn btn-sm btn-circle btn-ghost" (click)="onCancel.emit()">
         ✕
       </button>
+      }
     </div>
 
     <div class="py-4">
