@@ -1,9 +1,9 @@
 import { Component, effect, inject } from '@angular/core';
+import { UserStore } from '@core/store/user.store';
+import { WelcomeFlowComponent } from '../welcome-flow/welcome-flow.component';
 import { CategoriesComponent } from './categories/categories.component';
 import { TransactionHistoryComponent } from './transaction-history/transaction-history.component';
 import { TransactionsComponent } from './transactions/transactions.component';
-import { UserStore } from '@core/store/user.store';
-import { ModalComponent } from '@shared/components/modal/modal.component';
 
 @Component({
   selector: 'jet-dashboard',
@@ -11,7 +11,7 @@ import { ModalComponent } from '@shared/components/modal/modal.component';
     CategoriesComponent,
     TransactionsComponent,
     TransactionHistoryComponent,
-    ModalComponent,
+    WelcomeFlowComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',

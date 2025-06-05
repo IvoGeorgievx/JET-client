@@ -2,7 +2,7 @@
   <div class="modal-box">
     <div class="flex items-center mb-4" [ngClass]="showCloseButton() ? 'justify-between' : 'justify-center'">
       @if (headingTemplate()) {
-      <h3 class="text-lg font-bold">
+      <h3 class="text-lg font-bold w-full">
         <ng-container [ngTemplateOutlet]="headingTemplate()" />
       </h3>
 
@@ -24,5 +24,7 @@
     </div>
   </div>
 
+  @if (closeWithBackdrop()) {
   <div class="modal-backdrop custom-backdrop" (click)="onCancel.emit()"></div>
+  }
 </div>

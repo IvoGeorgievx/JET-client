@@ -12,6 +12,8 @@ export class ModalComponent {
   contentTemplate = input.required<TemplateRef<any>>();
   actionsTemplate = input<TemplateRef<any>>();
 
+  closeWithBackdrop = input<boolean>(true);
+
   isOpen = input.required<boolean>();
   showCloseButton = input<boolean>(true);
 

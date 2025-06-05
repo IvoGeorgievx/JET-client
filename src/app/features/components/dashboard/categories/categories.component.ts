@@ -11,6 +11,7 @@ import { checkInvalidFields } from '@shared/utils/form-utils';
 import { ModalComponent } from '../../../../shared/components/modal/modal.component';
 import { ToastInfo } from '@shared/types/toast.type';
 import { ToastComponent } from '../../../../shared/components/toast/toast.component';
+import { CreateCategoryComponent } from './create-category/create-category.component';
 
 interface ICategoryForm {
   name: FormControl<string>;
@@ -20,14 +21,20 @@ interface ICategoryForm {
 
 @Component({
   selector: 'jet-categories',
-  imports: [ReactiveFormsModule, ModalComponent, ToastComponent],
+  imports: [
+    ReactiveFormsModule,
+    ModalComponent,
+    ToastComponent,
+    CreateCategoryComponent,
+  ],
   templateUrl: './categories.component.html',
   styleUrl: './categories.component.css',
 })
-export class CategoriesComponent implements OnInit {
+export class CategoriesComponent {
   categoryStore = inject(CategoryStore);
+
+  // categoryForm: FormGroup<ICategoryForm>;
   categories: Signal<Category[]>;
-  categoryForm: FormGroup<ICategoryForm>;
 
   modalOpened = false;
   categoriesOpened = false;
@@ -42,55 +49,8 @@ export class CategoriesComponent implements OnInit {
     this.categories = this.categoryStore.categories;
   }
 
-  ngOnInit(): void {
-    this.initForm();
-  }
-
   public handleAccordionState() {
     this.categoriesOpened = !this.categoriesOpened;
-  }
-
-  private initForm(): void {
-    this.categoryForm = new FormGroup<ICategoryForm>({
-      name: new FormControl<string>('', {
-        nonNullable: true,
-        validators: Validators.required,
-      }),
-      type: new FormControl<string>('', {
-        nonNullable: true,
-        validators: Validators.required,
-      }),
-      budget: new FormControl<number | null>(null),
-    });
-  }
-
-  createCategory() {
-    if (this.categoryForm.invalid) {
-      this.categoryForm.markAllAsTouched();
-      return;
-    }
-
-    const payload = this.categoryForm.getRawValue();
-
-    this.categoryStore.createCategory(payload).subscribe({
-      next: () => {
-        this.showToast = true;
-        this.modalOpened = false;
-        this.toastInfo.set({
-          text: 'Category successfully created',
-          type: 'success',
-        });
-      },
-      error: () => {
-        this.showToast = true;
-        this.toastInfo.set({
-          text: 'Category creation failed.',
-          type: 'error',
-        });
-      },
-    });
-
-    this.categoryForm.reset();
   }
 
   deleteCategory(id: string) {
@@ -104,6 +64,7 @@ export class CategoriesComponent implements OnInit {
           type: 'success',
         });
       },
+      // toast is not working if more than 1 actions is performed.
       error: () => {
         this.showToast = true;
         this.toastInfo.set({
@@ -112,10 +73,6 @@ export class CategoriesComponent implements OnInit {
         });
       },
     });
-  }
-
-  checkInvalidField(field: string) {
-    return checkInvalidFields(this.categoryForm, field);
   }
 
   showModal() {

@@ -51,23 +51,7 @@
 <ng-template #heading> Create Category </ng-template>
 
 <ng-template #content>
-  <fieldset [formGroup]="categoryForm" class="fieldset w-full bg-base-200 border-base-300 rounded-box border p-4">
-    <label class="label">Name*</label>
-    <input type="text" formControlName="name" class="input" [class.input-error]="checkInvalidField('name')"
-      placeholder="Name" />
-
-    <label class="label">Type*</label>
-    <input type="text" formControlName="type" class="input" [class.input-error]="checkInvalidField('type')"
-      placeholder="Type" />
-
-    <label class="label">Budget</label>
-    <input type="number" formControlName="budget" class="input" [class.input-error]="checkInvalidField('budget')"
-      placeholder="Budget" />
-
-    <button class="btn btn-outline btn-success mt-4" (click)="createCategory()">
-      Create Category
-    </button>
-  </fieldset>
+  <jet-create-category [prefix]="'cc'" />
 </ng-template>
 
 <jet-modal [headingTemplate]="heading" [contentTemplate]="content" [isOpen]="modalOpened"

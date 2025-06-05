@@ -1,0 +1,50 @@
+<ng-template #heading>
+  <ul class="steps text-xs w-full">
+    <li data-content="✓" class="step step-m" [ngClass]="{ 'step-success': currentStep >= 0 }">
+      Welcome
+    </li>
+    <li [attr.data-content]="currentStep >= 1 ? '✓' : '✕'" class="step step-m"
+      [ngClass]="{ 'step-success': currentStep >= 1 }">
+      Categories
+    </li>
+    <li [attr.data-content]="currentStep >= 2 ? '✓' : '✕'" class="step step-m"
+      [ngClass]="{ 'step-success': currentStep >= 2 }">
+      Set Income
+    </li>
+    <li [attr.data-content]="currentStep >= 3 ? '✓' : '✕'" class="step step-m"
+      [ngClass]="{ 'step-success': currentStep >= 3 }">
+      Call to Action
+    </li>
+  </ul>
+</ng-template>
+<ng-template #content>
+  @if (currentStep === 0) {
+  <div class="flex justify-center items-center">
+    <h3 class="text-2xl text-center ">Track where your money goes — with clarity.</h3>
+  </div>
+  } @if (currentStep === 1) {
+  <h3 class="text-xl text-center">To get started, create your first category</h3>
+  <div class="mt-2 w-full">
+    <jet-create-category [prefix]="'welcome'" (categoryCreated)="categoryCreated = true" />
+  </div>
+
+  } @if (currentStep === 2) {
+  <p class="text-xl">Creating different categories enables you to track your income/expenses more precise. You
+    can edit these categories at any time and set different budgets. Categories enables you to create transactions. If
+    you
+    fill all your transactions, you will no longer wonder where is your money.</p>
+  } @if (currentStep
+  === 3) { call to action here }
+</ng-template>
+<ng-template #actions>
+  @if (currentStep > 0) {
+  <button class="btn btn-secondary" (click)="prevStep()">Back</button>
+  } @if (currentStep < 3) { <button class="btn btn-primary" [disabled]="disableNextPage" (click)="nextStep()">
+    Next</button>
+    } @if (currentStep === 3) {
+    <button class="btn btn-success" (click)="modalClosed.emit()">Finish</button>
+    }
+</ng-template>
+
+<jet-modal [headingTemplate]="heading" [contentTemplate]="content" [actionsTemplate]="actions" [isOpen]="opened()"
+  (onCancel)="modalClosed.emit()" [showCloseButton]="false" [isOpen]="opened()" [closeWithBackdrop]="false" />
