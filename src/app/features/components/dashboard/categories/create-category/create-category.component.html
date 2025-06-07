@@ -11,6 +11,14 @@
   <input type="number" [id]="prefix() + '-' + 'budget'" formControlName="budget" class="input w-full"
     [class.input-error]="checkInvalidField('budget')" placeholder="Budget" />
 
+  <label [htmlFor]="prefix() + '-' + 'budget-period'" class="label">Budget Period</label>
+  <select class="select w-full" formControlName="budgetPeriod" (select)="handleBudgetPeriod($event)"
+    [class.select-error]="checkInvalidField('budgetPeriod')">
+    <option [value]="budgetPeriod.MONTHLY">Monthly</option>
+    <option [value]="budgetPeriod.WEEKLY">Weekly</option>
+    <option [value]="budgetPeriod.DAILY">Daily</option>
+  </select>
+
   <button class="btn btn-outline btn-success mt-4" (click)="createCategory()">
     Create Category
   </button>
