@@ -20,6 +20,7 @@ interface BaseTransaction {
 
 export interface Transaction extends BaseTransaction {
   id: string;
+  createdAt: Date;
   userId: string;
   categoryDTO: Category;
 }

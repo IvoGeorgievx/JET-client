@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { CategoryStore } from '@core/store/category.store';
 import { TransactionStore } from '@core/store/transaction.store';
+import { CategoryBudgetPeriod } from '@shared/types/category.type';
 import {
   Transaction,
   TransactionPeriod,
@@ -50,8 +51,6 @@ export class TransactionHistoryComponent {
   });
 
   tabs: Signal<ITabs[]> = computed(() => {
-    const transactions = this.transactions();
-
     return [
       {
         label: 'All',
@@ -92,6 +91,65 @@ export class TransactionHistoryComponent {
   changeCategoryFilter(event: Event): void {
     const filter = (event.target as HTMLSelectElement).value;
     this.categoryFilter.set(filter);
+  }
+
+  checkBudgetLimit(transaction: Transaction) {
+    if (!transaction.categoryDTO.budget) {
+      return;
+    }
+
+    const budget = transaction.categoryDTO.budget;
+    const budgetPeriod = transaction.categoryDTO.budgetPeriod;
+    const transactionCreatedAt = new Date(transaction.createdAt);
+
+    const isSameDay = (a: Date, b: Date) =>
+      a.getFullYear() === b.getFullYear() &&
+      a.getMonth() === b.getMonth() &&
+      a.getDate() === b.getDate();
+
+    const isSameWeek = (a: Date, b: Date) => {
+      const startOfWeek = (d: Date) => {
+        const s = new Date(d);
+        s.setHours(0, 0, 0, 0);
+        s.setDate(s.getDate() - s.getDay());
+        return s;
+      };
+      return (
+        startOfWeek(a).getTime() === startOfWeek(b).getTime() &&
+        a.getFullYear() === b.getFullYear()
+      );
+    };
+
+    const isSameMonth = (a: Date, b: Date) =>
+      a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth();
+
+    let filtered = this.transactions().filter(
+      (t) => t.categoryDTO.name === transaction.categoryDTO.name
+    );
+
+    switch (budgetPeriod) {
+      case CategoryBudgetPeriod.DAILY:
+        filtered = filtered.filter((t) =>
+          isSameDay(new Date(t.createdAt), transactionCreatedAt)
+        );
+        break;
+      case CategoryBudgetPeriod.WEEKLY:
+        filtered = filtered.filter((t) =>
+          isSameWeek(new Date(t.createdAt), transactionCreatedAt)
+        );
+        break;
+      case CategoryBudgetPeriod.MONTHLY:
+        filtered = filtered.filter((t) =>
+          isSameMonth(new Date(t.createdAt), transactionCreatedAt)
+        );
+        break;
+      default:
+        break;
+    }
+
+    const transactionSum = filtered.reduce((sum, t) => sum + t.amount, 0);
+
+    return budget >= transactionSum;
   }
 
   nextPage() {

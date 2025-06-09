@@ -42,11 +42,7 @@
           transactionForm.get('description')?.touched
         " placeholder="Description" />
 
-      <label class="label">Type</label>
-      <select class="select w-full" formControlName="type">
-        <option [value]="transactionType.EXPENSE">Expense</option>
-        <option [value]="transactionType.INCOME">Income</option>
-      </select>
+
 
       <label class="label">Category</label>
       <select class="select w-full" formControlName="category">
@@ -54,6 +50,17 @@
         <option [value]="category.id">{{ category.name }}</option>
         }
       </select>
+
+      <label class="label">Type</label>
+      <select class="select w-full" formControlName="type">
+        <option [value]="transactionType.EXPENSE">Expense</option>
+        <option [value]="transactionType.INCOME">Income</option>
+      </select>
+
+      <label class="label mt-3">
+        <input type="checkbox" class="toggle" />
+        Recurring
+      </label>
 
       <div class="flex gap-2 mt-4 self-end flex-row-reverse">
         <button class="btn btn-outline btn-success" (click)="createTransaction()" [disabled]="transactionForm.invalid">

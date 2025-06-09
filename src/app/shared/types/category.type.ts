@@ -8,7 +8,7 @@ export interface Category {
   id: string;
   name: string;
   type: string;
-  budget: string;
+  budget: number;
   budgetPeriod: CategoryBudgetPeriod;
   default: boolean;
 }

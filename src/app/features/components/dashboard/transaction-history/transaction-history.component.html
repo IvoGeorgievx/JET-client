@@ -33,7 +33,10 @@
         } @else { @for (transaction of tab.content; track $index) {
         <div class="flex justify-between items-center">
           <div>
-            <p>{{ transaction.amount }}</p>
+            <span class="badge"
+              [ngClass]="{ 'badge-primary': checkBudgetLimit(transaction), 'badge-error': !checkBudgetLimit(transaction) }">{{
+              transaction.amount }}</span>
+
             <p>{{ transaction.description }}</p>
           </div>
           <div>
