@@ -1,9 +1,16 @@
 <fieldset [formGroup]="registerForm" class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
-  <legend class="fieldset-legend">Register</legend>
-
-  <label class="label">Username</label>
+  <legend class="fieldset-legend">Register</legend> <label class="label">Username</label>
   <input type="username" formControlName="username" [class.input-error]="checkInvalidField('username')" class="input"
     placeholder="Username" />
+  @if (registerForm.get('username')?.pending) {
+  <div class="text-info text-sm mt-1">Checking username availability...</div>
+  }
+  @if (registerForm.get('username')?.hasError('usernameTaken') && registerForm.get('username')?.touched) {
+  <div class="text-error text-sm mt-1">Username is already taken</div>
+  }
+  @if (registerForm.get('username')?.hasError('required') && registerForm.get('username')?.touched) {
+  <div class="text-error text-sm mt-1">Username is required</div>
+  }
 
   <label class="label">Password</label>
   <input type="password" formControlName="password" [class.input-error]="checkInvalidField('password')" class="input"

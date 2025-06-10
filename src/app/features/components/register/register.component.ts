@@ -8,6 +8,7 @@ import {
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 import { checkInvalidFields } from '@shared/utils/form-utils';
+import { UsernameValidator } from '@shared/validators/username.validator';
 
 @Component({
   selector: 'jet-register',
@@ -16,13 +17,14 @@ import { checkInvalidFields } from '@shared/utils/form-utils';
   styleUrl: './register.component.css',
 })
 export class RegisterComponent implements OnInit {
-  registerForm: FormGroup<{
+  protected registerForm: FormGroup<{
     username: FormControl;
     password: FormControl;
   }>;
 
   private authService = inject(AuthService);
   private router = inject(Router);
+  private usernameValidator = inject(UsernameValidator);
 
   ngOnInit(): void {
     this.initForm();
@@ -30,7 +32,12 @@ export class RegisterComponent implements OnInit {
 
   private initForm(): void {
     this.registerForm = new FormGroup({
-      username: new FormControl('', Validators.required),
+      username: new FormControl('', {
+        validators: [Validators.required, Validators.minLength(3)],
+        asyncValidators: this.usernameValidator.validate.bind(
+          this.usernameValidator
+        ),
+      }),
       password: new FormControl('', Validators.required),
     });
   }

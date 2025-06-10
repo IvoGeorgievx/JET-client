@@ -28,16 +28,16 @@ interface ITransactionForm {
   styleUrl: './transactions.component.css',
 })
 export class TransactionsComponent implements OnInit {
-  transactionStore = inject(TransactionStore);
-  categoryStore = inject(CategoryStore);
+  readonly transactionStore = inject(TransactionStore);
+  readonly categoryStore = inject(CategoryStore);
   overallTransactions = this.transactionStore.overallTransactions;
 
-  showModal = false;
+  protected showModal = false;
 
-  transactionType = TransactionType;
-  transactionPeriod = TransactionPeriod;
+  readonly transactionType = TransactionType;
+  readonly transactionPeriod = TransactionPeriod;
 
-  transactionForm: FormGroup<ITransactionForm>;
+  protected transactionForm: FormGroup<ITransactionForm>;
 
   ngOnInit(): void {
     this.initForm();

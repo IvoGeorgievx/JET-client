@@ -41,6 +41,17 @@ export class AuthService {
       );
   }
 
+  checkUsernameAvailability(
+    username: string
+  ): Observable<{ available: boolean }> {
+    return this.http.get<{ available: boolean }>(
+      `${local.API_URL}/user/check-username`,
+      {
+        params: { username },
+      }
+    );
+  }
+
   signUp(body: {
     username: string;
     password: string;
