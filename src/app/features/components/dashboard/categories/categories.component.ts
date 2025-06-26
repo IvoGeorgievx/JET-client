@@ -1,15 +1,9 @@
-import { Component, inject, OnInit, signal, Signal } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { Component, computed, inject, signal, Signal } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CategoryStore } from '@core/store/category.store';
 import { Category } from '@shared/types/category.type';
-import { checkInvalidFields } from '@shared/utils/form-utils';
-import { ModalComponent } from '../../../../shared/components/modal/modal.component';
 import { ToastInfo } from '@shared/types/toast.type';
+import { ModalComponent } from '../../../../shared/components/modal/modal.component';
 import { ToastComponent } from '../../../../shared/components/toast/toast.component';
 import { CreateCategoryComponent } from './create-category/create-category.component';
 
@@ -77,5 +71,18 @@ export class CategoriesComponent {
 
   showModal() {
     this.modalOpened = true;
+  }
+
+  handleCloseToast() {
+    this.showToast = false;
+  }
+
+  handleCreateCategory() {
+    this.modalOpened = false;
+    this.toastInfo.set({
+      text: 'Successfully created a category.',
+      type: 'success',
+    });
+    this.showToast = true;
   }
 }

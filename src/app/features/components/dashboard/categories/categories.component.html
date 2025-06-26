@@ -51,12 +51,13 @@
 <ng-template #heading> Create Category </ng-template>
 
 <ng-template #content>
-  <jet-create-category [prefix]="'cc'" />
+  <jet-create-category [prefix]="'cc'" (categoryCreated)="handleCreateCategory()" />
 </ng-template>
 
 <jet-modal [headingTemplate]="heading" [contentTemplate]="content" [isOpen]="modalOpened"
   (onCancel)="modalOpened = false" />
 
 @if (showToast) {
-<jet-toast [text]="toastInfo().text" [type]="toastInfo().type ?? 'info'" />
+<jet-toast [text]="toastInfo().text" (closed)="handleCloseToast()" [type]="toastInfo().type ?? 'info'"
+  [duration]="toastInfo().duration ?? 3000" />
 }

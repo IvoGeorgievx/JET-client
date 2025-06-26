@@ -18,7 +18,7 @@ interface ITransactionForm {
   amount: FormControl<number>;
   description: FormControl<string>;
   type: FormControl<TransactionType>;
-  category: FormControl<string>;
+  categoryId: FormControl<string>;
 }
 
 @Component({
@@ -57,7 +57,7 @@ export class TransactionsComponent implements OnInit {
         nonNullable: true,
         validators: [Validators.required],
       }),
-      category: new FormControl('', {
+      categoryId: new FormControl('', {
         nonNullable: true,
         validators: [Validators.required],
       }),
@@ -71,13 +71,12 @@ export class TransactionsComponent implements OnInit {
     }
 
     const payload = this.transactionForm.getRawValue();
-    if (!payload.category) {
-      this.transactionForm.get('category')?.setErrors({ required: true });
+    if (!payload.categoryId) {
+      this.transactionForm.get('categoryId')?.setErrors({ required: true });
       return;
     }
     this.transactionStore.createTransaction({
       ...payload,
-      categoryId: payload.category,
     });
     this.transactionForm.reset();
     this.showModal = false;

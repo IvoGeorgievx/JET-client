@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, input, OnInit } from '@angular/core';
+import { Component, input, OnInit, output } from '@angular/core';
 
 @Component({
   selector: 'jet-toast',
@@ -14,9 +14,12 @@ export class ToastComponent implements OnInit {
 
   isVisible = true;
 
+  closed = output();
+
   ngOnInit(): void {
     setTimeout(() => {
       this.isVisible = false;
+      this.closed.emit();
     }, this.duration());
   }
 

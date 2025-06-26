@@ -45,7 +45,7 @@
 
 
       <label class="label">Category</label>
-      <select class="select w-full" formControlName="category">
+      <select class="select w-full" formControlName="categoryId">
         @for (category of categoryStore.categories(); track category.id) {
         <option [value]="category.id">{{ category.name }}</option>
         }
