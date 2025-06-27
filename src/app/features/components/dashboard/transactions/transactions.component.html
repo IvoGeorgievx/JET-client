@@ -1,4 +1,4 @@
-<div class="flex gap-4">
+<div class="flex gap-4 justify-center">
   <div class="flex flex-col gap-2">
     <select class="select" (change)="changeTransactionPeriod($event)">
       <option disabled selected>Pick a period</option>
@@ -7,26 +7,28 @@
       <option [value]="transactionPeriod.MONTHLY">Monthly</option>
       <option [value]="transactionPeriod.YEARLY">Yearly</option>
     </select>
-    <p>
-      expense: @if (transactionStore.isLoading()) {
-      <span class="loading loading-infinity loading-lg"></span>
-      } @else {
-      {{ overallTransactions()?.expense | number : "1.2-2" }}
-      }
-    </p>
-    <p>
-      income: @if (transactionStore.isLoading()) {
-      <span class="loading loading-infinity loading-lg"></span>
-      } @else {
-      {{ overallTransactions()?.income | number : "1.2-2" }}
-      }
-    </p>
+
   </div>
   <button type="button" class="btn btn-accent" (click)="openModal()">
     Open Modal
   </button>
 </div>
-
+<div class="my-2">
+  <p class="text-center">
+    expense: @if (transactionStore.isLoading()) {
+    <span class="loading loading-infinity loading-lg"></span>
+    } @else {
+    {{ overallTransactions()?.expense | number : "1.2-2" }}
+    }
+  </p>
+  <p class="text-center">
+    income: @if (transactionStore.isLoading()) {
+    <span class="loading loading-infinity loading-lg"></span>
+    } @else {
+    {{ overallTransactions()?.income | number : "1.2-2" }}
+    }
+  </p>
+</div>
 <ng-template #modalContent>
   <div class="modal-action">
     <fieldset [formGroup]="transactionForm" class="fieldset bg-base-200 border-base-300 rounded-box w-full border p-4">

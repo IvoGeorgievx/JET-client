@@ -1,5 +1,5 @@
-<div class="flex gap-4">
-  <jet-categories />
+<div class="flex flex-col gap-4 lg:flex-row">
+  <div class="self-center lg:self-auto"><jet-categories /></div>
 
   <!-- @defer () { -->
   <jet-transactions />
@@ -7,7 +7,7 @@
   <!-- } @placeholder (minimum 500ms) {
   <span class="loading loading-infinity loading-lg"></span>
   } -->
-  <div class="ml-6">
+  <div class="md:ml-6">
     <jet-transaction-history />
   </div>
 </div>

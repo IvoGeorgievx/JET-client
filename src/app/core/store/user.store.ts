@@ -1,4 +1,5 @@
-import { computed, inject } from '@angular/core';
+import { computed, inject, signal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { AuthService } from '@core/services/auth.service';
 import { LocalStorageService } from '@core/services/local-storage.service';
 import { tapResponse } from '@ngrx/operators';
@@ -25,13 +26,28 @@ const initialUserState: User = {
 export const UserStore = signalStore(
   { providedIn: 'root' },
   withDevtools('user'),
-  withState({ ...initialUserState, isHydrated: false }),
+  withState({ ...initialUserState, userHydrated: false }),
 
-  withProps((store) => ({
-    _authService: inject(AuthService),
-    _localStorageService: inject(LocalStorageService),
-    isLoggedIn: computed(() => !!store.id() && !!store.username()),
-  })),
+  withProps((store) => {
+    const idSignal = store.id;
+    const usernameSignal = store.username;
+    const isHydratedSignal = store.userHydrated;
+    const isLoggedIn$ = toObservable(
+      computed(() => !!idSignal() && !!usernameSignal())
+    );
+    const isHydrated$ = toObservable(isHydratedSignal);
+    return {
+      _authService: inject(AuthService),
+      _localStorageService: inject(LocalStorageService),
+      isLoggedIn: computed(() => {
+        const id = idSignal();
+        const username = usernameSignal();
+        return !!id && !!username;
+      }),
+      isLoggedIn$,
+      isHydrated$,
+    };
+  }),
 
   withMethods((store) => ({
     fetchCurrentUser: rxMethod<void>(
@@ -48,13 +64,12 @@ export const UserStore = signalStore(
                 patchState(store, {
                   id: response.id,
                   username: response.username,
-                  isHydrated: true,
+                  userHydrated: true,
                   isFirstLogin: response.isFirstLogin,
                 });
               },
               error: (err) => {
-                console.error(err);
-                patchState(store, { isHydrated: true });
+                patchState(store, { userHydrated: true });
               },
               finalize: () => {
                 patchState(store, { isLoading: false });
@@ -69,7 +84,7 @@ export const UserStore = signalStore(
       patchState(store, {
         id: user.id,
         username: user.username,
-        isHydrated: true,
+        userHydrated: true,
         isFirstLogin: user.isFirstLogin,
       });
     },
@@ -79,7 +94,7 @@ export const UserStore = signalStore(
       patchState(store, {
         id: null,
         username: null,
-        isHydrated: true,
+        userHydrated: true,
       });
     },
   })),
@@ -90,7 +105,7 @@ export const UserStore = signalStore(
       if (token) {
         store.fetchCurrentUser();
       } else {
-        patchState(store, { isHydrated: true });
+        patchState(store, { userHydrated: true });
       }
     },
   })

@@ -1,4 +1,4 @@
-<div class="flex gap-2">
+<div class="flex gap-2 md:flex-row flex-col justify-center items-center">
   <select class="select" id="transaction-period" (change)="changeTransactionPeriod($event)">
     <option disabled selected>Pick a period</option>
     <option [value]="transactionPeriod.DAILY">Daily</option>
@@ -14,7 +14,7 @@
   </select>
 </div>
 <div class="flex flex-col gap-4 justify-center items-center">
-  <div class="tabs tabs-border flex justify-center items-center">
+  <div class="tabs tabs-border flex justify-center items-center p-2">
     @for (tab of tabs(); track $index; let i = $index) {
     <ng-container>
       <input type="radio" class="tab" name="tab" (change)="activeTab = i" [checked]="activeTab === i"
