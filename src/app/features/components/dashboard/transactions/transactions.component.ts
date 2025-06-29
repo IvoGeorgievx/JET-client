@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -13,6 +13,8 @@ import {
   TransactionType,
 } from '@shared/types/transaction.type';
 import { ModalComponent } from '../../../../shared/components/modal/modal.component';
+import { AgCharts } from 'ag-charts-angular';
+import { AgChartOptions } from 'ag-charts-community';
 
 interface ITransactionForm {
   amount: FormControl<number>;
@@ -23,14 +25,37 @@ interface ITransactionForm {
 
 @Component({
   selector: 'jet-transactions',
-  imports: [ReactiveFormsModule, CommonModule, ModalComponent],
+  imports: [ReactiveFormsModule, CommonModule, ModalComponent, AgCharts],
   templateUrl: './transactions.component.html',
   styleUrl: './transactions.component.css',
 })
 export class TransactionsComponent implements OnInit {
   readonly transactionStore = inject(TransactionStore);
   readonly categoryStore = inject(CategoryStore);
-  overallTransactions = this.transactionStore.overallTransactions;
+  protected overallTransactions = this.transactionStore.overallTransactions;
+
+  protected options = computed((): AgChartOptions => {
+    const overall = this.overallTransactions() ?? { income: 0, expense: 0 };
+    return {
+      width: 300,
+      height: 300,
+      data: [
+        { asset: 'Income', amount: overall.income },
+        { asset: 'Expense', amount: overall.expense },
+      ],
+
+      title: {
+        text: 'Expense Report',
+      },
+      series: [
+        {
+          type: 'pie',
+          angleKey: 'amount',
+          legendItemKey: 'asset',
+        },
+      ],
+    };
+  });
 
   protected showModal = false;
 

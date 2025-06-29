@@ -15,6 +15,8 @@ import {
   TransactionPeriod,
   TransactionType,
 } from '@shared/types/transaction.type';
+import { AgCharts } from 'ag-charts-angular';
+import { AgChartOptions } from 'ag-charts-community';
 
 interface ITabs {
   label: string;
@@ -22,7 +24,7 @@ interface ITabs {
 }
 @Component({
   selector: 'jet-transaction-history',
-  imports: [CommonModule],
+  imports: [CommonModule, AgCharts],
   templateUrl: './transaction-history.component.html',
   styleUrl: './transaction-history.component.css',
 })
@@ -38,6 +40,24 @@ export class TransactionHistoryComponent {
   currentTransactionPeriod = TransactionPeriod.MONTHLY;
 
   categoryFilter = signal<string>('');
+
+  protected options = computed((): AgChartOptions => {
+    return {
+      width: 300,
+      height: 300,
+      data: [],
+      title: {
+        text: 'test1',
+      },
+      series: [
+        {
+          type: 'pie',
+          angleKey: 'amount',
+          legendItemKey: 'asset',
+        },
+      ],
+    };
+  });
 
   activeTab = 0;
 
