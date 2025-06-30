@@ -34,3 +34,9 @@ export interface OverallTransaction {
   expense: number;
   period: TransactionPeriod;
 }
+
+export interface SpendingByCategory {
+  categoryName: string;
+  expense: number;
+  income: number;
+}

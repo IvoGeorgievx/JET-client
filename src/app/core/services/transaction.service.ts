@@ -4,6 +4,7 @@ import { local } from '@shared/constants/environments';
 import {
   CreateTransaction,
   OverallTransaction,
+  SpendingByCategory,
   Transaction,
   TransactionPeriod,
 } from '@shared/types/transaction.type';
@@ -49,6 +50,19 @@ export class TransactionService {
   ): Observable<OverallTransaction> {
     return this.http.get<OverallTransaction>(
       `${local.API_URL}/transactions/overall`,
+      {
+        params: {
+          period,
+        },
+      }
+    );
+  }
+
+  getSpendingByCategory(
+    period: TransactionPeriod
+  ): Observable<SpendingByCategory[]> {
+    return this.http.get<SpendingByCategory[]>(
+      `${local.API_URL}/transactions/spending`,
       {
         params: {
           period,

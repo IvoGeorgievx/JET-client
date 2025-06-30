@@ -2,6 +2,7 @@ import { withDevtools } from '@angular-architects/ngrx-toolkit';
 import {
   CreateTransaction,
   OverallTransaction,
+  SpendingByCategory,
   Transaction,
   TransactionPeriod,
 } from './../../shared/types/transaction.type';
@@ -23,6 +24,7 @@ interface ITransactionStore {
     total?: number;
     totalPages?: number;
   };
+  spendingByCategory: SpendingByCategory[];
   overallTransactions: OverallTransaction | null;
   error: null | string;
   isLoading: boolean;
@@ -34,6 +36,7 @@ const initialState: ITransactionStore = {
     total: 0,
     totalPages: 0,
   },
+  spendingByCategory: [],
   overallTransactions: null,
   error: null,
   isLoading: false,
@@ -145,9 +148,36 @@ export const TransactionStore = signalStore(
     },
   })),
 
+  withMethods((store) => ({
+    getSpendingByCategory: (
+      period: TransactionPeriod = TransactionPeriod.YEARLY
+    ) => {
+      patchState(store, { isLoading: true }),
+        store._transactionService
+          .getSpendingByCategory(period)
+          .pipe(
+            tap((data) => {
+              patchState(store, {
+                isLoading: false,
+                spendingByCategory: data,
+              });
+            }),
+            catchError((error) => {
+              patchState(store, {
+                isLoading: false,
+                error: error || 'Failed to get transactions by category.',
+              });
+              throw error;
+            })
+          )
+          .subscribe();
+    },
+  })),
+
   withHooks({
     onInit: (store) => {
       store.getOverallTransactions();
+      store.getSpendingByCategory();
     },
   })
 );

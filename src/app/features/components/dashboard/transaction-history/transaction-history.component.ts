@@ -16,7 +16,11 @@ import {
   TransactionType,
 } from '@shared/types/transaction.type';
 import { AgCharts } from 'ag-charts-angular';
-import { AgChartOptions } from 'ag-charts-community';
+import {
+  AgBarSeriesOptions,
+  AgChartOptions,
+  AgLineSeriesOptions,
+} from 'ag-charts-community';
 
 interface ITabs {
   label: string;
@@ -36,6 +40,8 @@ export class TransactionHistoryComponent {
   totalPages = this.transactionStore.history.totalPages;
   currentPage = signal<number>(1);
 
+  spendingByCategory = this.transactionStore.spendingByCategory;
+
   transactionPeriod = TransactionPeriod;
   currentTransactionPeriod = TransactionPeriod.MONTHLY;
 
@@ -43,19 +49,57 @@ export class TransactionHistoryComponent {
 
   protected options = computed((): AgChartOptions => {
     return {
-      width: 300,
-      height: 300,
-      data: [],
+      width: 600,
+      height: 600,
+      data: this.spendingByCategory().map((category) => ({
+        asset: category.categoryName,
+        income: category.income,
+        expense: category.expense,
+        net: Number((category.income - category.expense).toFixed(2)),
+      })),
       title: {
-        text: 'test1',
+        text: 'Income - Expense by Category',
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#5b21b6',
+      },
+      background: {
+        fill: '#ffffff',
       },
       series: [
         {
-          type: 'pie',
-          angleKey: 'amount',
-          legendItemKey: 'asset',
-        },
+          type: 'bar',
+          xKey: 'asset',
+          yKey: 'net',
+          label: {
+            enabled: true,
+            formatter: ({ value }) => value.toFixed(2),
+            color: '#ffffff',
+            fontWeight: 'bold',
+          },
+          fill: '#8b5cf6',
+          fillOpacity: 0.9,
+          stroke: '#5b21b6',
+          strokeWidth: 2,
+          shadow: {
+            color: 'rgba(91, 33, 182, 0.3)',
+            xOffset: 3,
+            yOffset: 3,
+            blur: 12,
+          },
+          highlightStyle: {
+            item: {
+              fill: '#a78bfa',
+              stroke: '#5b21b6',
+              strokeWidth: 2,
+            },
+          },
+        } as AgBarSeriesOptions,
+        { type: 'line', xKey: 'net' } as AgLineSeriesOptions,
       ],
+      legend: {
+        position: 'bottom',
+      },
     };
   });
 
