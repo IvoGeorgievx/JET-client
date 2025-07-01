@@ -33,9 +33,10 @@
         } @else { @for (transaction of tab.content; track $index) {
         <div class="flex justify-between items-center">
           <div>
-            <span class="badge"
-              [ngClass]="{ 'badge-primary': checkBudgetLimit(transaction), 'badge-error': !checkBudgetLimit(transaction) }">{{
-              transaction.amount }}</span>
+            <span class="badge" [ngClass]="{
+                'badge-primary': checkBudgetLimit(transaction),
+                'badge-error': !checkBudgetLimit(transaction)
+              }">{{ transaction.amount }}</span>
 
             <p>{{ transaction.description }}</p>
           </div>
@@ -59,5 +60,48 @@
       »
     </button>
   </div>
+</div>
+<div class="flex gap-2 w-full">
+  <div class="stats shadow w-full">
+    <div class="stat">
+      <div class="stat-title">Highest Income</div>
+      @if (highestIncome()) {
+      <div class="stat-value">{{highestIncome()?.net}}</div>
+      <div class="stat-desc">Category: {{highestIncome()?.categoryName}} </div>
+      } @else {
+      <div class="stat-value"> - </div>
+      <div class="stat-desc"> - </div>
+      }
+
+    </div>
+  </div>
+  <div class="stats shadow w-full">
+    <div class="stat">
+      <div class="stat-title">Highest Expense</div>
+      @if (highestExpense()) {
+      <div class="stat-value">{{highestExpense()?.net}}</div>
+      <div class="stat-desc">Category: {{highestExpense()?.categoryName}} </div>
+      } @else {
+      <div class="stat-value"> - </div>
+      <div class="stat-desc"> - </div>
+      }
+    </div>
+  </div>
+  <div class="stats shadow w-full">
+    <div class="stat">
+      <div class="stat-title">Total Page Views</div>
+      <div class="stat-value">89,400</div>
+      <div class="stat-desc">21% more than last month</div>
+    </div>
+  </div>
+</div>
+<div class="flex justify-end py-2">
+  <select class="select w-1/3" id="transaction-period-chart" (change)="changeSpendingPeriod($event)">
+    <option value="">All</option>
+    <option [value]="transactionPeriod.DAILY">Daily</option>
+    <option [value]="transactionPeriod.WEEKLY">Weekly</option>
+    <option [value]="transactionPeriod.MONTHLY">Monthly</option>
+    <option [value]="transactionPeriod.YEARLY">Yearly</option>
+  </select>
 </div>
 <ag-charts [options]="options()" />

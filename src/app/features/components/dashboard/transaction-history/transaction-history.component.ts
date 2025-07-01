@@ -45,6 +45,34 @@ export class TransactionHistoryComponent {
   transactionPeriod = TransactionPeriod;
   currentTransactionPeriod = TransactionPeriod.MONTHLY;
 
+  constructor() {
+    this.transactionStore.getTransactionHistory(this.currentTransactionPeriod);
+  }
+
+  highestIncome = computed(() => {
+    const categories = this.spendingByCategory();
+    if (!categories.length) return null;
+    const maxCategory = categories.reduce((max, curr) =>
+      curr.income > max.income ? curr : max
+    );
+    return {
+      categoryName: maxCategory.categoryName,
+      net: Number(maxCategory.income.toFixed(2)),
+    };
+  });
+
+  highestExpense = computed(() => {
+    const categories = this.spendingByCategory();
+    if (!categories.length) return null;
+    const maxCategory = categories.reduce((max, curr) =>
+      curr.expense > max.expense ? curr : max
+    );
+    return {
+      categoryName: maxCategory.categoryName,
+      net: Number(maxCategory.expense.toFixed(2)),
+    };
+  });
+
   categoryFilter = signal<string>('');
 
   protected options = computed((): AgChartOptions => {
@@ -139,10 +167,6 @@ export class TransactionHistoryComponent {
     return this.categoryStore.categories();
   });
 
-  constructor() {
-    this.transactionStore.getTransactionHistory(this.currentTransactionPeriod);
-  }
-
   changeTransactionPeriod(event: Event) {
     const transactionPeriod = (event.target as HTMLSelectElement).value;
     this.currentTransactionPeriod = transactionPeriod as TransactionPeriod;
@@ -150,6 +174,17 @@ export class TransactionHistoryComponent {
       this.currentTransactionPeriod,
       this.currentPage() - 1
     );
+  }
+
+  changeSpendingPeriod(event: Event) {
+    const period = (event.target as HTMLSelectElement)
+      .value as TransactionPeriod;
+
+    if (period) {
+      this.transactionStore.getSpendingByCategory(period);
+    } else {
+      this.transactionStore.getSpendingByCategory();
+    }
   }
 
   changeCategoryFilter(event: Event): void {

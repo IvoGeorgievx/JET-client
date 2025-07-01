@@ -50,6 +50,7 @@ export const TransactionStore = signalStore(
 
   withProps(() => ({
     _transactionService: inject(TransactionService),
+    _transactionPeriod: TransactionPeriod.YEARLY,
   })),
 
   withMethods((store) => ({
@@ -81,42 +82,12 @@ export const TransactionStore = signalStore(
   })),
 
   withMethods((store) => ({
-    // if i dont create this new withMethods(), there is no access to the store.getOverallTransactions() ??
-    createTransaction: (data: CreateTransaction) => {
-      patchState(store, {
-        isLoading: true,
-      });
-      store._transactionService
-        .createTransaction(data)
-        .pipe(
-          tap((transaction) => {
-            patchState(store, {
-              history: {
-                transactions: [...store.history.transactions(), transaction],
-              },
-              isLoading: false,
-            });
-            store.getOverallTransactions();
-            // maybe should do something else rather than making another request.
-          }),
-          catchError((error) => {
-            patchState(store, {
-              error: error || 'Failed to create a new transaction.',
-              isLoading: false,
-            });
-            throw error;
-          })
-        )
-        .subscribe();
-    },
-  })),
-
-  withMethods((store) => ({
     getTransactionHistory: (
       period: TransactionPeriod = TransactionPeriod.WEEKLY,
       page: number = 0,
       perPage: number = 5
     ) => {
+      store._transactionPeriod = period;
       patchState(store, { isLoading: true }),
         store._transactionService
           .getTransactionHistory(period, page, perPage)
@@ -171,6 +142,36 @@ export const TransactionStore = signalStore(
             })
           )
           .subscribe();
+    },
+  })),
+
+  withMethods((store) => ({
+    createTransaction: (data: CreateTransaction) => {
+      patchState(store, {
+        isLoading: true,
+      });
+      store._transactionService
+        .createTransaction(data)
+        .pipe(
+          tap((transaction) => {
+            patchState(store, {
+              history: {
+                transactions: [...store.history.transactions(), transaction],
+              },
+              isLoading: false,
+            });
+            store.getOverallTransactions(store._transactionPeriod);
+            store.getSpendingByCategory(store._transactionPeriod);
+          }),
+          catchError((error) => {
+            patchState(store, {
+              error: error || 'Failed to create a new transaction.',
+              isLoading: false,
+            });
+            throw error;
+          })
+        )
+        .subscribe();
     },
   })),
 
